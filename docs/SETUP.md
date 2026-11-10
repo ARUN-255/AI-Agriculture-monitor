@@ -11,6 +11,10 @@ Python 3.11+, Node.js 20+, a Supabase project. Plant Doctor additionally needs a
 ## Environment
 Copy the root .env.example to .env, backend/.env.example to backend/.env, frontend/.env.example to frontend/.env, and simulator/.env.example to simulator/.env. Use the same Supabase URL and anon key in backend and frontend. Generate a long random DEVICE_TOKEN and set it in backend and simulator. The single-farm simulator discovers the signed-in farm automatically after you open the dashboard once. SIMULATOR_USER_ID is optional and is only needed when operating multiple farms.
 
+## Verify Supabase before starting
+
+From the backend folder, activate the virtual environment and run `python scripts/check_supabase.py`. It checks the Supabase URL and keys, all four database tables, the private `leaf-images` bucket and the Auth endpoint. It reports only pass/fail status and never prints secrets. Resolve any failures before starting the simulator.
+
 ## Run locally
 Backend terminal:
 
