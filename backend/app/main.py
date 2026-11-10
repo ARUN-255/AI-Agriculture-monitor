@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from uuid import uuid4
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Query
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
@@ -98,10 +99,15 @@ async def update_irrigation(update:IrrigationUpdate, uid=Depends(user_id)):
     return rows[0] if rows else await ensure_state(uid)
 
 @app.get("/device/command")
-async def device_command(user_id:str, _=Depends(device_auth)):
+async def device_command(user_id:str|None=None, _=Depends(device_auth)):
     if not store.enabled:
         raise HTTPException(503, "Database is not configured")
-    return await ensure_state(user_id)
+    if user_id:
+        return await ensure_state(user_id)
+    state = await store.latest("device_state", {"select":"*", "order":"updated_at.asc", "limit":"1"})
+    if not state:
+        raise HTTPException(404, "No farm is registered yet. Sign in to the dashboard once to initialize device state.")
+    return state
 
 @app.get("/weather")
 async def weather(lat:float|None=None, lon:float|None=None, _=Depends(current_user)):
@@ -133,7 +139,13 @@ async def predict_disease(file:UploadFile=File(...), uid=Depends(user_id)):
     except Exception as exc:
         raise HTTPException(422, f"Could not process image: {exc}")
     if result["status"] == "ok" and store.enabled:
-        await store.insert("disease_scans", {"user_id":uid, "disease":result["disease"], "confidence":result["confidence"], "treatment":result["treatment"]})
+        suffix = {"image/jpeg":"jpg", "image/png":"png", "image/webp":"webp"}[file.content_type]
+        object_path = f"{uid}/{uuid4()}.{suffix}"
+        try:
+            image_path = await store.upload("leaf-images", object_path, raw, file.content_type)
+            await store.insert("disease_scans", {"user_id":uid, "image_url":image_path, "disease":result["disease"], "confidence":result["confidence"], "treatment":result["treatment"]})
+        except Exception:
+            await store.insert("disease_scans", {"user_id":uid, "disease":result["disease"], "confidence":result["confidence"], "treatment":result["treatment"]})
     return result
 
 @app.get("/disease/history")
