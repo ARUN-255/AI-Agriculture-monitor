@@ -1,6 +1,8 @@
 import asyncio,os,random
 from datetime import datetime,timezone
 import httpx
+from dotenv import load_dotenv
+load_dotenv()
 BASE=os.getenv("API_BASE_URL","http://localhost:8000").rstrip("/"); USER_ID=os.getenv("SIMULATOR_USER_ID",""); TOKEN=os.getenv("DEVICE_TOKEN",""); INTERVAL=max(2,int(os.getenv("SIMULATOR_INTERVAL_SECONDS","5")))
 async def run():
  if not USER_ID or not TOKEN:raise SystemExit("Set SIMULATOR_USER_ID and DEVICE_TOKEN before starting the simulator.")
