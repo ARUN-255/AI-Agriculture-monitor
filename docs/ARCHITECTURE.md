@@ -1,0 +1,5 @@
+React PWA authenticates with Supabase Auth, then sends the access token to FastAPI. FastAPI validates the token with Supabase Auth and scopes every user query by that user's UUID. A server-side service-role key is used only by FastAPI for PostgREST writes. The virtual ESP32 simulator authenticates with a separate device token, posts sensor readings and polls the device command endpoint. Weather is fetched from Open-Meteo. Plant Doctor runs an optional TensorFlow Lite classifier.
+
+Irrigation safety order: tank at or below 1% blocks the pump; maximum runtime stops a prolonged run; rain forecast skips automatic irrigation; soil at/below low threshold starts; soil at/above high threshold stops; values between thresholds retain state. Manual mode follows the operator command except for tank/runtime interlocks.
+
+For hardware migration, implement the same POST /readings payload and GET /device/command poll on ESP32 firmware. Add independent firmware-level watchdog, dry-run, tank and electrical interlocks. Cloud control must not be the only safety mechanism.
