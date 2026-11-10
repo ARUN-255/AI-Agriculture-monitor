@@ -118,3 +118,9 @@ footer{background:#ffffff80}
   .layout nav button{flex-basis:63px;min-width:63px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+@media(max-width:650px){
+  .layout nav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));overflow:visible;gap:1px}
+  .layout nav button{min-width:0;width:100%;flex:none;white-space:normal;text-align:center;font-size:8px;line-height:1.05;padding:5px 1px;overflow-wrap:anywhere}
+  .layout nav button svg{flex:0 0 19px}
+}
