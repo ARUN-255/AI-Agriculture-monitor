@@ -1,0 +1,1 @@
+Place a compatible trained TensorFlow Lite image classifier at plant_disease.tflite and matching labels.txt here (one output class per line). Verify model input dimensions, normalization, output order and labels against its training pipeline. Model weights are not bundled. Until both files exist, Plant Doctor returns model_not_configured rather than a fabricated diagnosis.
