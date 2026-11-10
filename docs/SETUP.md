@@ -26,8 +26,10 @@ Simulator terminal:
     python -m venv .venv
     source .venv/bin/activate
     pip install -r requirements.txt
-    export SIMULATOR_USER_ID=your-auth-user-uuid DEVICE_TOKEN=your-device-token
+    export DEVICE_TOKEN=your-device-token
     python simulator.py
+
+    # SIMULATOR_USER_ID is optional for a single farm; the simulator discovers it after you sign in to the dashboard once.
 
 Frontend terminal:
 
