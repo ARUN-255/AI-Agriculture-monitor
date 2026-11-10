@@ -41,4 +41,4 @@ services:
       - key: VITE_SUPABASE_ANON_KEY
         sync: false
       - key: VITE_API_URL
-        sync: false
+        value: https://agri-guard-api.onrender.com
