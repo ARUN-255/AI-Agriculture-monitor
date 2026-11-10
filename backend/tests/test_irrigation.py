@@ -5,3 +5,9 @@ def test_rain_skips_irrigation():assert decide_irrigation(mode="auto",moisture=1
 def test_empty_tank_blocks_manual():
  on,reason=decide_irrigation(mode="manual",moisture=10,tank=0,rain_expected=False,pump_on=True); assert on is False and "empty" in reason
 def test_manual_mode_obeys_command():assert decide_irrigation(mode="manual",moisture=10,tank=90,rain_expected=False,pump_on=True)[0] is True
+
+from datetime import datetime,timedelta,timezone
+def test_maximum_runtime_stops_pump():
+ now=datetime.now(timezone.utc)
+ on,reason=decide_irrigation(mode="manual",moisture=20,tank=80,rain_expected=False,pump_on=True,pump_started_at=now-timedelta(seconds=901),now=now)
+ assert on is False and "maximum runtime" in reason
