@@ -11,7 +11,7 @@ services:
     build: ./simulator
     env_file: .env
     environment:
-      API_BASE_URL: ${API_BASE_URL:-http://backend:8000}
+      API_BASE_URL: ${API_BASE_URL:-https://agri-guard-api.onrender.com}
       SIMULATOR_INTERVAL_SECONDS: 5
     depends_on: [backend]
     restart: unless-stopped
