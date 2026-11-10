@@ -1,0 +1,44 @@
+# Render Blueprint for Agri Guard
+# Deploy with Render Dashboard -> New -> Blueprint and connect this repository.
+services:
+  - type: web
+    name: agri-guard-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: DEVICE_TOKEN
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: WEATHER_LAT
+        value: "13.1439"
+      - key: WEATHER_LON
+        value: "79.9089"
+      - key: WEATHER_LOCATION_NAME
+        value: Tiruvallur
+
+  - type: web
+    name: agri-guard-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    autoDeploy: true
+    envVars:
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: VITE_API_URL
+        sync: false
