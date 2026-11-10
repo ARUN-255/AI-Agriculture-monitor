@@ -1,6 +1,9 @@
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      args:
+        ENABLE_ML: ${ENABLE_ML:-false}
     env_file: .env
     ports: ["8000:8000"]
     restart: unless-stopped
