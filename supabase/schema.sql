@@ -15,3 +15,6 @@ drop policy if exists "Users read own alerts" on public.alerts; create policy "U
 drop policy if exists "Users resolve own alerts" on public.alerts; create policy "Users resolve own alerts" on public.alerts for update to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
 do $$ begin alter publication supabase_realtime add table public.sensor_readings; exception when duplicate_object then null; when undefined_object then null; end $$;
 insert into storage.buckets(id,name,public) values('leaf-images','leaf-images',false) on conflict(id) do nothing;
+
+-- Track pump start time so maximum runtime is enforced in automatic and manual modes.
+alter table public.device_state add column if not exists pump_started_at timestamptz;
