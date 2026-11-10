@@ -10,7 +10,7 @@ All user routes require Authorization: Bearer <Supabase access token>. Device ro
 | POST | /readings | Simulator telemetry |
 | GET | /irrigation/state | Irrigation mode and thresholds |
 | POST | /irrigation/state | Update mode, pump command or thresholds |
-| GET | /device/command?user_id=UUID | Simulator polls device state |
+| GET | /device/command | Simulator discovers the first farm; optionally pass user_id for multi-farm setups |
 | GET | /weather | Open-Meteo weather and irrigation advice |
 | POST | /disease/predict | Multipart upload field named file |
 | GET | /disease/history | Disease scan history |
