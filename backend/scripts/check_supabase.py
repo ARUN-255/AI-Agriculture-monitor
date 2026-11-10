@@ -5,7 +5,9 @@ The script never prints or uploads credentials.
 """
 import asyncio
 import sys
+from pathlib import Path
 import httpx
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.config import settings
 
 TABLES = ("sensor_readings", "device_state", "disease_scans", "alerts")
