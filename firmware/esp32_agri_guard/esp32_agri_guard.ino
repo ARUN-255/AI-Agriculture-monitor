@@ -103,7 +103,6 @@ bool postReading(float soil, float temperature, float humidity,
   doc["solar_voltage"] = solarVolts;
   // No physical pump is connected in this firmware version.
   doc["pump_on"] = false;
-  doc["water_used_l"] = 0.0;
 
   String body;
   serializeJson(doc, body);
