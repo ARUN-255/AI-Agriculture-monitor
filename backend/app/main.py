@@ -9,6 +9,7 @@ from .security import current_user, device_auth
 from .irrigation import decide_irrigation
 from .weather import get_weather
 from .disease import DiseaseClassifier
+from .gemini_disease import analyze_leaf_with_gemini
 
 app = FastAPI(title="AI Smart Agri Guard API", version="1.0.0", description="Smart agriculture telemetry, irrigation, weather and plant health API")
 app.add_middleware(CORSMiddleware, allow_origins=settings.cors_list, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
@@ -135,9 +136,12 @@ async def predict_disease(file:UploadFile=File(...), uid=Depends(user_id)):
     if len(raw) > 8*1024*1024:
         raise HTTPException(413, "Image must be smaller than 8 MB")
     try:
-        result = classifier.predict(raw)
+        if settings.gemini_api_key:
+            result = await analyze_leaf_with_gemini(raw, file.content_type)
+        else:
+            result = classifier.predict(raw)
     except Exception as exc:
-        raise HTTPException(422, f"Could not process image: {exc}")
+        raise HTTPException(502, f"Plant Doctor analysis failed: {exc}")
     if result["status"] == "ok" and store.enabled:
         suffix = {"image/jpeg":"jpg", "image/png":"png", "image/webp":"webp"}[file.content_type]
         object_path = f"{uid}/{uuid4()}.{suffix}"
