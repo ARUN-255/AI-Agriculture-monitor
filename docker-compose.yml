@@ -7,14 +7,6 @@ services:
     env_file: .env
     ports: ["8000:8000"]
     restart: unless-stopped
-  simulator:
-    build: ./simulator
-    env_file: .env
-    environment:
-      API_BASE_URL: ${API_BASE_URL:-https://agri-guard-api.onrender.com}
-      SIMULATOR_INTERVAL_SECONDS: 5
-    depends_on: [backend]
-    restart: unless-stopped
   frontend:
     build:
       context: ./frontend
