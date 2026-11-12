@@ -17,7 +17,7 @@ classifier = DiseaseClassifier(settings.disease_model_path, settings.disease_lab
 
 @app.get("/health")
 async def health():
-    return {"status":"ok", "database_configured":store.enabled, "authentication_configured":bool(settings.supabase_url and settings.supabase_anon_key), "device_configured":bool(settings.device_token and settings.device_token != "development-only-change-me"), "disease_model_ready":classifier.ready, "weather_provider":"Open-Meteo"}
+    return {"status":"ok", "database_configured":store.enabled, "authentication_configured":bool(settings.supabase_url and settings.supabase_anon_key), "device_configured":bool(settings.device_token and settings.device_token != "development-only-change-me"), "disease_model_ready":classifier.ready, "gemini_configured":bool(settings.gemini_api_key), "gemini_model":settings.gemini_model, "weather_provider":"Open-Meteo"}
 
 async def user_id(user=Depends(current_user)):
     return user["id"]
