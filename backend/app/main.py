@@ -32,11 +32,11 @@ async def ensure_state(uid):
 async def latest_reading(uid=Depends(user_id)):
     if not store.enabled:
         raise HTTPException(503, "Database is not configured. Add Supabase credentials.")
-    return await store.latest("sensor_readings", {"user_id":f"eq.{uid}", "select":"*", "order":"created_at.desc", "limit":"1"})
+    return await store.latest("sensor_readings", {"user_id":f"eq.{uid}", "select":"*", "source":"eq.esp32", "order":"created_at.desc", "limit":"1"})
 
 @app.get("/readings/history")
 async def reading_history(limit:int=Query(100, ge=1, le=1000), uid=Depends(user_id)):
-    rows = await store.request("GET", "sensor_readings", params={"user_id":f"eq.{uid}", "select":"*", "order":"created_at.desc", "limit":str(limit)})
+    rows = await store.request("GET", "sensor_readings", params={"user_id":f"eq.{uid}", "select":"*", "source":"eq.esp32", "order":"created_at.desc", "limit":str(limit)})
     return list(reversed(rows or []))
 
 @app.post("/readings")
@@ -63,7 +63,7 @@ async def create_reading(reading:ReadingIn, _=Depends(device_auth)):
     await store.request("PATCH", "device_state", params={"user_id":f"eq.{reading.user_id}"},
         body={"pump_command":pump, "pump_started_at":next_started, "updated_at":now.isoformat()}, prefer="return=minimal")
     reading.pump_on = pump
-    row = await store.insert("sensor_readings", reading.model_dump())
+    row = await store.insert("sensor_readings", {**reading.model_dump(), "source":"esp32"})
     if reason.startswith("Pump blocked") or reason.startswith("Pump stopped"):
         await store.insert("alerts", {"user_id":reading.user_id, "type":"safety", "message":reason})
     if reading.water_tank <= 15:
