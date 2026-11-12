@@ -9,7 +9,7 @@ A solar-powered smart farming platform built to monitor crop conditions, reduce 
 - Supabase email/password authentication and protected dashboard.
 - Live dashboard: soil moisture, temperature, humidity, tank level, battery, solar voltage and pump status.
 - Automatic/manual irrigation with moisture hysteresis, rain skip, empty-tank interlock and maximum pump runtime.
-- Plant Doctor image upload, private Supabase Storage and optional TensorFlow Lite inference.
+- Plant Doctor leaf-photo analysis using Gemini when a server-side API key is configured; optional TensorFlow Lite fallback.
 - Three-day weather forecast and irrigation suggestion (Open-Meteo requires no API key).
 - Solar monitor, sensor history charts, alert history and alert resolution.
 - Mobile-friendly PWA shell, service worker and install manifest.
