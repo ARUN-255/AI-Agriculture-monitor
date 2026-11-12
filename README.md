@@ -2,38 +2,35 @@
 
 **Every Drop Counts, Every Crop Matters.**
 
-A solar-powered smart farming platform built to monitor crop conditions, reduce unnecessary irrigation and help farmers inspect leaf health. This repository includes a React dashboard, FastAPI backend, Supabase PostgreSQL, a virtual ESP32 simulator, Open-Meteo weather integration and an optional TensorFlow Lite disease classifier.
+Agri Guard is a smart-farming dashboard designed to display real readings from a physical ESP32 sensor unit. It uses a React frontend, FastAPI backend, Supabase database and Gemini-powered Plant Doctor.
 
-## Included features
+## Features
+- Supabase email/password authentication.
+- Hardware telemetry: soil moisture, air temperature, humidity, water-tank level, battery estimate and solar voltage.
+- Dashboard, history charts and alerts based only on readings stored by the backend.
+- Gemini Plant Doctor for leaf-photo assessment.
+- Three-day weather forecast and irrigation guidance.
+- Mobile-friendly progressive web app.
+- ESP32 firmware for capacitive soil moisture, DHT22, waterproof ultrasonic tank-level sensing and voltage monitoring.
 
-- Supabase email/password authentication and protected dashboard.
-- Live dashboard: soil moisture, temperature, humidity, tank level, battery, solar voltage and pump status.
-- Automatic/manual irrigation with moisture hysteresis, rain skip, empty-tank interlock and maximum pump runtime.
-- Plant Doctor leaf-photo analysis using Gemini when a server-side API key is configured; optional TensorFlow Lite fallback.
-- Three-day weather forecast and irrigation suggestion (Open-Meteo requires no API key).
-- Solar monitor, sensor history charts, alert history and alert resolution.
-- Mobile-friendly PWA shell, service worker and install manifest.
-- Python virtual ESP32 simulator that posts demo telemetry and polls device commands. One-farm mode discovers the signed-in farm automatically.\n- ESP32 sensor firmware prototype for capacitive soil moisture, DHT22, waterproof tank-level sensing and solar/battery voltage monitoring. See [wiring plan](docs/HARDWARE_WIRING_ESP32.md) and [firmware setup](firmware/esp32_agri_guard/README.md).
+**Hardware-only data policy:** the frontend does not generate sample readings, fake history or demo alerts. When no ESP32 data has arrived, the dashboard displays a waiting/no-data state. A disconnected or failed sensor must not be represented as a valid reading.
 
 ## Start here
-
 1. Create a Supabase project and run `supabase/schema.sql` in its SQL Editor.
-2. Copy the relevant `.env.example` files and enter your Supabase URL, anon key, service-role key and a strong shared device token. Never commit real secrets.
-3. Start FastAPI, the simulator and the Vite frontend using [docs/SETUP.md](docs/SETUP.md).
-4. Create an account in the app and keep the dashboard open; the simulator will discover this farm and begin sending readings.
+2. Configure the backend and frontend environment variables using the example files.
+3. Deploy the backend and frontend, or run them locally using [docs/SETUP.md](docs/SETUP.md).
+4. Assemble the low-voltage sensor unit using [the ESP32 wiring plan](docs/HARDWARE_WIRING_ESP32.md).
+5. Configure and upload the sketch from [the firmware folder](firmware/esp32_agri_guard/README.md).
 
 ## Repository map
-
-- `frontend/` — React + Vite application, charts, authentication and PWA.
-- `backend/` — FastAPI routes, Supabase data access, irrigation policy, weather and disease inference.
-- `simulator/` — virtual ESP32 sensor and pump simulation.
+- `frontend/` — React dashboard, charts, authentication and PWA.
+- `backend/` — FastAPI routes, Supabase data access, irrigation policy, weather and Gemini disease analysis.
+- `firmware/esp32_agri_guard/` — ESP32 sensor firmware prototype.
 - `supabase/schema.sql` — database tables, indexes, RLS policies and realtime publication.
-- `docs/` — setup, API and architecture.
+- `docs/` — setup, API, architecture and hardware wiring.
 
-## Plant Doctor model requirement
-
-A trained TensorFlow Lite model is not bundled. To enable real disease predictions, add a compatible model at `backend/models/plant_disease.tflite`, its matching `labels.txt`, and install the optional runtime from `backend/requirements-ml.txt`. Until then, the endpoint explicitly reports that the model is not configured; it never fabricates a diagnosis.
+## Plant Doctor
+Configure `GEMINI_API_KEY` on the backend service. Never put it in the frontend or commit it to GitHub. AI assessments are not confirmed diagnoses; consult an agricultural expert for treatment decisions.
 
 ## Safety
-
-The simulator is for development and demonstration, not a safety-certified irrigation controller. Before connecting a physical pump, add an appropriately rated relay/contactor, fuse, isolated supply, enclosure, hardware watchdog, dry-run protection and independent tank/overcurrent interlocks. Cloud software must never be the only pump safety layer. Keep the Supabase service-role key and device token on the server.
+The current firmware is sensor-only: it does not actuate a pump or relay. Do not connect a pump to an ESP32 GPIO. Before adding irrigation hardware, design and independently test a properly rated relay/contactor, fuse, isolated supply, enclosure, watchdog, dry-run protection, emergency stop and tank/overcurrent interlocks. Cloud software must never be the only pump safety layer. Keep the Supabase service-role key and device token server-side/private.
