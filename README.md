@@ -13,7 +13,7 @@ A solar-powered smart farming platform built to monitor crop conditions, reduce 
 - Three-day weather forecast and irrigation suggestion (Open-Meteo requires no API key).
 - Solar monitor, sensor history charts, alert history and alert resolution.
 - Mobile-friendly PWA shell, service worker and install manifest.
-- Python simulator that posts telemetry and polls device commands. One-farm mode discovers the signed-in farm automatically.
+- Python virtual ESP32 simulator that posts demo telemetry and polls device commands. One-farm mode discovers the signed-in farm automatically.\n- ESP32 sensor firmware prototype for capacitive soil moisture, DHT22, waterproof tank-level sensing and solar/battery voltage monitoring. See [wiring plan](docs/HARDWARE_WIRING_ESP32.md) and [firmware setup](firmware/esp32_agri_guard/README.md).
 
 ## Start here
 
